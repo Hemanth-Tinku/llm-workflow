@@ -1,10 +1,11 @@
-import './App.css';
+
 import WorkflowCanvas from './components/organisms/WorkflowCanvas';
+import Toolbar from './components/organisms/ToolBar';
 
 function App() {
   return (
-    <div className="App">
-      <h1>LLM Workflow</h1>
+    <div style={{display:'flex',flex: 1, height: '100vh', width: '100vw'}}>
+      <Toolbar />
       <WorkflowCanvas />
     </div>
   );

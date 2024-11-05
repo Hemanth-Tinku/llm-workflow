@@ -4,7 +4,7 @@ import Toolbar from './components/organisms/ToolBar';
 
 function App() {
   return (
-    <div style={{display:'flex',flex: 1, height: '100vh', width: '100vw'}}>
+    <div style={{display:'flex', height: '100vh'}}>
       <Toolbar />
       <WorkflowCanvas />
     </div>

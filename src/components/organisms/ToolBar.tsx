@@ -10,16 +10,13 @@ const Toolbar: React.FC = () => {
             borderRight: '1px solid #ddd',
             display: 'flex',
             flexDirection: 'column',
-            position: 'fixed',
-            top: 0,
-            left: 0,
             overflowY: 'auto'
         }}>
             <h2 style={{ marginBottom: '20px' }}>Nodes</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <DraggableNode type='input' label='Input' />
-                <DraggableNode type='llm' label='LLM' />
-                <DraggableNode type='output' label='Output' />
+                <DraggableNode type='inputNode' label='Input' />
+                <DraggableNode type='llmNode' label='LLM' />
+                <DraggableNode type='outputNode' label='Output' />
             </div>
         </div>
     );

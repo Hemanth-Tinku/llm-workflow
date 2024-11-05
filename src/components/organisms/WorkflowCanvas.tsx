@@ -2,6 +2,14 @@ import React, { createContext, useCallback, useContext, useReducer, useRef, useS
 import ReactFlow, { Controls, Background, MiniMap, Node, ReactFlowInstance, NodeChange, EdgeChange, Connection } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { workflowReducer, initialState } from '../../reducers/workflowReducer';
+import InputNode from '../molecules/InputNode';
+import LLMNode from '../molecules/LLMNode';
+import OutputNode from '../molecules/OutputNode';
+
+interface NodeData {
+    id: string;
+    nodeType: string;
+}
 
 const WorkflowContext = createContext<any>(null);
 
@@ -9,13 +17,11 @@ export const useWorkflow = () => useContext(WorkflowContext);
 
 const gridSize = 20;
 
-interface NodeData {
-    id: string;
-    nodeType: string;
-}
-
-
-let nodeIdCounter = 3;
+const nodeTypes = {
+    inputNode: InputNode,
+    llmNode: LLMNode,
+    outputNode: OutputNode,
+};
 
 const WorkflowCanvas: React.FC = () => {
     const [state, dispatch] = useReducer(workflowReducer, initialState);
@@ -82,14 +88,14 @@ const WorkflowCanvas: React.FC = () => {
         [reactFlowInstance]
     );
 
-    const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>): void => {
+    const onDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
-    }, []);
+    };
 
-    const onInit = useCallback((instance: ReactFlowInstance): void => {
+    const onInit = (instance: ReactFlowInstance): void => {
         setReactFlowInstance(instance);
-    }, []);
+    };
 
     return (
         <div style={{ flex: 1, height: '100vh' }}>
@@ -104,6 +110,8 @@ const WorkflowCanvas: React.FC = () => {
                     onDrop={onDrop}
                     onDragOver={onDragOver}
                     onInit={onInit}
+                    nodeTypes={nodeTypes}
+                    snapGrid={[gridSize, gridSize]}
                 >
                     <Background color="#aaa" gap={gridSize} />
                     <Controls />

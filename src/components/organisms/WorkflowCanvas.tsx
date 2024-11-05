@@ -1,11 +1,15 @@
 import ReactFlow, { Controls, Background, MiniMap, useEdgesState, useNodesState } from 'reactflow';
 import 'reactflow/dist/style.css';
 import InputNode from '../molecules/InputNode';
+import OutputNode from '../molecules/OutputNode';
+import LLMNode from '../molecules/LLMNode';
 
 const gridSize = 20;
 
 const nodeTypes = {
-    inputNode: InputNode
+    inputNode: InputNode,
+    llmNode: LLMNode,
+    outputNode: OutputNode
 }
 
 const initialNode = [
@@ -13,7 +17,19 @@ const initialNode = [
         id: 'node-0',
         type: 'inputNode',
         position: { x: 100, y: 100 },
-        data: { }
+        data: {}
+    },
+    {
+        id: 'node-1',
+        type: 'llmNode',
+        position: { x: 300, y: 100 },
+        data: {}
+    },
+    {
+        id: 'node-2',
+        type: 'outputNode',
+        position: { x: 500, y: 100 },
+        data: {}
     }
 ]
 

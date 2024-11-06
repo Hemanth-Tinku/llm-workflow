@@ -41,6 +41,7 @@ src/
 │   └── workflowReducer.ts       # Reducer managing the state of the workflow and nodes
 │
 └── styles/                      # Contains all CSS-in-JS style objects for components
+```
 
 ## Components Overview
 

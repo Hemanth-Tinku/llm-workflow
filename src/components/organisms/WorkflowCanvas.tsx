@@ -25,6 +25,7 @@ const nodeTypes = {
 
 const WorkflowCanvas: React.FC = () => {
     const [state, dispatch] = useReducer(workflowReducer, initialState);
+    console.log("==== state", state);
     const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
     const reactFlowContainer = useRef<HTMLDivElement>(null);
 
@@ -48,16 +49,6 @@ const WorkflowCanvas: React.FC = () => {
         return { id: nodeID, nodeType: type };
     };
 
-    const getNodeID = (type: string): string => {
-        dispatch({ type: 'UPDATE_NODE_ID', payload: type });
-        let nodeID = 0;
-        if (state.nodeIDs?.[type] !== undefined) {
-            nodeID = state.nodeIDs?.[type] + 1;
-        }
-        return String(nodeID);
-    };
-
-
     const onDrop = useCallback(
         (event: React.DragEvent<HTMLDivElement>): void => {
             event.preventDefault();
@@ -74,7 +65,7 @@ const WorkflowCanvas: React.FC = () => {
                     y: event.clientY - reactFlowBounds.top,
                 });
 
-                let nodeID = getNodeID(type)
+                let nodeID = new Date().getTime().toString();
                 const newNode: Node = {
                     id: nodeID,
                     type,

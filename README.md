@@ -1,7 +1,5 @@
 # LLM Workflow Builder
 
-This project is a **workflow builder for LLM (Large Language Model) nodes**, providing an interactive interface where users can set up workflows with various input, LLM, and output nodes to create and test language models' responses.
-
 [**Live Demo**](https://llm-workflow-hemanth-kumars-projects-54558d95.vercel.app/)
 
 ## Overview

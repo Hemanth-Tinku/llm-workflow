@@ -7,10 +7,35 @@ import InputNode from '../molecules/InputNode';
 import LLMNode from '../molecules/LLMNode';
 import OutputNode from '../molecules/OutputNode';
 
-interface NodeData {
+interface BaseNodeData {
     id: string;
     nodeType: string;
+    dispatch: any;
 }
+
+interface InputNodeData extends BaseNodeData {
+    inputValue: string;
+    error: string;
+}
+
+interface LLMNodeData extends BaseNodeData {
+    modelName: string;
+    apiKey: string;
+    base: string;
+    maxTokens: number;
+    temperature: number;
+    errors: {
+        model?: string;
+        apiKey?: string;
+        base?: string;
+    };
+}
+
+interface OutputNodeData extends BaseNodeData {
+    outputValue: string;
+}
+
+type NodeData = InputNodeData | LLMNodeData | OutputNodeData;
 
 const WorkflowContext = createContext<any>(null);
 
@@ -47,7 +72,9 @@ const WorkflowCanvas: React.FC = () => {
         if (sourceNode && targetNode) {
             if ((sourceNode.type === 'inputNode' && targetNode.type === 'llmNode') ||
                 (sourceNode.type === 'llmNode' && targetNode.type === 'outputNode')) {
-                dispatch({ type: 'CONNECT', payload: connection });
+                const llmNodeId = sourceNode.type === 'llmNode' ? sourceNode.id : targetNode.id;
+                const connectedNode = sourceNode.type === 'llmNode' ? targetNode : sourceNode
+                dispatch({ type: 'CONNECT', payload: { connection: connection, llmNodeId: llmNodeId, connectedNode: connectedNode } });
             } else {
                 setError("Invalid connection! InputNode should connect to LLMNode, and LLMNode should connect to OutputNode.");
             }
@@ -59,7 +86,29 @@ const WorkflowCanvas: React.FC = () => {
     };
 
     const getInitNodeData = (nodeID: string, type: string): NodeData => {
-        return { id: nodeID, nodeType: type };
+        if (type === 'llmNode') {
+            return {
+                id: nodeID,
+                nodeType: type,
+                modelName: '',
+                apiKey: '',
+                base: 'https://api.openai.com/v1/completions',
+                maxTokens: 100,
+                temperature: 0.5,
+                errors: {},
+                dispatch
+            }
+        }
+        else if (type === 'inputNode') {
+            return {
+                id: nodeID,
+                nodeType: type,
+                inputValue: '',
+                error: '',
+                dispatch
+            }
+        }
+        return { id: nodeID, nodeType: type, dispatch, outputValue: '' };
     };
 
     const onDrop = useCallback(
@@ -101,23 +150,72 @@ const WorkflowCanvas: React.FC = () => {
         setReactFlowInstance(instance);
     };
 
+    const getLLMResponse = async ({ modelName, apiKey, temperature, input, maxTokens, base }: any) => {
+        try {
+            const response = await fetch(base, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+                body: JSON.stringify({
+                    model: modelName,
+                    prompt: input,
+                    max_tokens: maxTokens,
+                    temperature: temperature,
+                }),
+            });
+
+            if (!response.ok) {
+                alert(`OpenAI API call failed: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            return data.choices[0]?.text || 'No response from API';
+        } catch (error: any) {
+            throw new Error(`Error calling OpenAI API: ${error.message}`);
+        }
+    };
+
     const runWorkflow = async () => {
         setError(null);
         setIsRunning(true);
 
         try {
             for (const node of state.nodes) {
-                if (node.type === 'llmNode' && (!node.data.apiKey || !node.data.modelName)) {
+                if (node.type === 'inputNode' && !node.data?.inputValue) {
+                    dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'inputValue', errorMessage: 'Input is required.' } });
+                    throw new Error(`Empty Input node with ID: ${node.id}`);
+                }
+                if (node.type === 'llmNode') {
+                    if (!node.data.modelName) {
+                        dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'modelName', errorMessage: 'Model name is required.' } })
+                    }
+                    if (!node.data.apiKey) {
+                        dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'apiKey', errorMessage: 'API key is required.' } })
+                    }
+                    if (!node.data.base) {
+                        dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'base', errorMessage: 'Base URL is required.' } })
+                    }
                     throw new Error(`Configuration missing in LLM node with ID: ${node.id}`);
                 }
             }
 
             for (const node of state.nodes) {
+
                 if (node.type === 'llmNode') {
-                    await node.data.onRun({
-                        model: node.data.modelName,
-                        apiKey: node.data.apiKey,
-                        temperature: node.data.temperature,
+                    const { modelName, apiKey, temperature, maxTokens, base } = node.data;
+
+                    const input = state.nodes.find(n => n.id === node.data.inputNodeId)?.data.inputValue || '';
+
+                    //  OpenAI API for this LLM Node
+                    const result = await getLLMResponse({ modelName, apiKey, temperature, input, maxTokens, base });
+
+                    const outputNodeId = state.nodes.find(n => n.id === node.data.outputNodeId)?.id || '';
+                    dispatch({
+                        type: 'UPDATE_NODE_FIELD', payload: {
+                            nodeId: outputNodeId, fieldName: 'outputValue', fieldValue: result
+                        }
                     });
                 }
             }

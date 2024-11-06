@@ -3,7 +3,9 @@ import { Handle, Position } from 'reactflow';
 
 interface OutputNodeProps {
     id: string;
-    data: any;
+    data: {
+        outputValue: string;
+    };
 }
 
 const OutputNode: React.FC<OutputNodeProps> = ({ id, data }) => {

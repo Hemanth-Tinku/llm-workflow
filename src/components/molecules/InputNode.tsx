@@ -1,17 +1,27 @@
-import { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 interface InputNodeProps {
     id: string;
-    data: any;
+    data: {
+        id: string;
+        inputValue: string;
+        errors: {
+            inputValue?: string;
+        };
+        dispatch: any;
+    };
 }
 
 const InputNode: React.FC<InputNodeProps> = ({ id, data }) => {
-    const [inputValue, setInputValue] = useState<string>("");
+    const { id: nodeID, inputValue, dispatch, errors } = data;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setInputValue(value);
+        dispatch({
+            type: 'UPDATE_NODE_FIELD', payload: {
+                nodeId: nodeID, fieldName: 'inputValue', fieldValue: value
+            }
+        });
     };
 
     return (
@@ -19,17 +29,16 @@ const InputNode: React.FC<InputNodeProps> = ({ id, data }) => {
             <div>
                 <strong>Input</strong>
             </div>
-            <div>
-                <label>
-                    Query:
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        placeholder="Enter your query"
-                        style={{ width: '100%', marginBottom: '5px' }}
-                    />
-                </label>
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ fontSize: 13 }}>Input:</label>
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    placeholder="Enter your query"
+                    style={{ width: '100%', marginBottom: '5px' }}
+                />
+                {errors?.inputValue && <span style={{ color: 'red', fontSize: 12 }}>{errors.inputValue}</span>}
             </div>
             <Handle type="source" position={Position.Right} id={`${id}-llm`} />
         </div>

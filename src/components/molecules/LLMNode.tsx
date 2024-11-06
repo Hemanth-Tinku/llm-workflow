@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 interface LLMNodeProps {
     id: string;
     data: {
-        onRun: (config: { model: string; apiKey: string; temperature: number }) => void;
+        id: string;
+        modelName: string;
+        apiKey: string;
+        base: string;
+        maxTokens: number;
+        temperature: number;
+        errors: {
+            modelName?: string;
+            apiKey?: string;
+            base?: string;
+        };
+        dispatch: any;
     };
 }
 
 const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
-    const [modelName, setModelName] = useState<string>('');
-    const [apiKey, setApiKey] = useState<string>('');
-    const [temperature, setTemperature] = useState<number>(0.7);
-    const [errors, setErrors] = useState<{ model?: string; apiKey?: string }>({});
+    const { id: nodeID, modelName, base, apiKey,
+        maxTokens,
+        temperature, errors, dispatch } = data;
 
-    const validateInputs = () => {
-        const validationErrors: { model?: string; apiKey?: string } = {};
-        if (!modelName) validationErrors.model = 'Model name is required.';
-        if (!apiKey) validationErrors.apiKey = 'API key is required.';
-        return validationErrors;
-    };
-
-    useEffect(() => {
-        const validationErrors = validateInputs();
-        setErrors(validationErrors);
-
-        if (Object.keys(validationErrors).length === 0) {
-            data.onRun({ model: modelName, apiKey, temperature });
-        }
-    }, [modelName, apiKey, temperature, data]);
+    const onChangeField = (key: string, value: string | number) => {
+        dispatch({
+            type: 'UPDATE_NODE_FIELD', payload: {
+                nodeId: nodeID, fieldName: key, fieldValue: value
+            }
+        });
+    }
 
     return (
         <div style={{ width: 260, padding: 10, border: '1px solid #ddd', borderRadius: 5, background: '#f9f9f9' }}>
@@ -39,11 +40,23 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
                 <input
                     type="text"
                     value={modelName}
-                    onChange={(e) => setModelName(e.target.value)}
+                    onChange={(e) => onChangeField('modelName', e.target.value)}
                     placeholder="e.g., gpt-3.5"
                     style={{ width: '100%', marginBottom: 4, padding: 4 }}
                 />
-                {errors.model && <span style={{ color: 'red', fontSize: 12 }}>{errors.model}</span>}
+                {errors.modelName && <span style={{ color: 'red', fontSize: 12 }}>{errors.modelName}</span>}
+            </div>
+
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ fontSize: 13 }}>OpenAI Base:</label>
+                <input
+                    type="text"
+                    value={base}
+                    onChange={(e) => onChangeField('base', e.target.value)}
+                    placeholder="e.g., https://api.openai.com"
+                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                />
+                {errors.base && <span style={{ color: 'red', fontSize: 12 }}>{errors.base}</span>}
             </div>
 
             <div style={{ marginBottom: 8 }}>
@@ -51,11 +64,24 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
                 <input
                     type="password"
                     value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
+                    onChange={(e) => onChangeField('apiKey', e.target.value)}
                     placeholder="Enter API Key"
                     style={{ width: '100%', marginBottom: 4, padding: 4 }}
                 />
                 {errors.apiKey && <span style={{ color: 'red', fontSize: 12 }}>{errors.apiKey}</span>}
+            </div>
+
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ fontSize: 13 }}>Max Tokens:</label>
+                <input
+                    type="number"
+                    value={maxTokens}
+                    onChange={(e) => onChangeField('maxTokens', Number(e.target.value))}
+                    min={1}
+                    max={4096}
+                    placeholder="e.g., 100"
+                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                />
             </div>
 
             <div style={{ marginBottom: 8 }}>
@@ -65,7 +91,7 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
                 <input
                     type="range"
                     value={temperature}
-                    onChange={(e) => setTemperature(Number(e.target.value))}
+                    onChange={(e) => onChangeField('temperature', Number(e.target.value))}
                     min={0}
                     max={1}
                     step={0.1}

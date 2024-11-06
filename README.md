@@ -41,3 +41,22 @@ src/
 │   └── workflowReducer.ts       # Reducer managing the state of the workflow and nodes
 │
 └── styles/                      # Contains all CSS-in-JS style objects for components
+
+## Components Overview
+
+### Organisms
+High-level components that provide the main app structure and layout:
+- **Toolbar**: Allows users to select different types of nodes (Input, LLM, Output) and drag them to the workflow canvas.
+- **Navbar**: Displays the app title and a "Run Workflow" button, which initiates workflow execution.
+- **WorkflowCanvas**: The primary workspace where users configure nodes and define their connections.
+
+### Molecules
+Smaller, reusable components that represent individual nodes or elements within a node:
+- **InputNode**: Represents the input node where users can input data for the workflow.
+- **LLMNode**: Represents the language model node, allowing users to configure model parameters.
+- **OutputNode**: Displays the output of the workflow process.
+- **DraggableNode**: A wrapper that enables drag-and-drop functionality for nodes on the canvas.
+
+## State Management (React Reducer)
+
+The application uses `useReducer` (in `workflowReducer.ts`) to manage complex interactions and state updates for each node in the workflow. The reducer manages actions such as updating node fields, setting errors, and resetting errors. This approach allows for a scalable and efficient way to handle state changes as the workflow grows in complexity.

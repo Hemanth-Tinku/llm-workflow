@@ -29,7 +29,8 @@ type Action =
   | { type: 'EDGES_CHANGE'; payload: EdgeChange[] }
   | { type: 'CONNECT'; payload: { connection: Connection, llmNodeId: string, connectedNode: Node } }
   | { type: 'UPDATE_NODE_FIELD'; payload: { nodeId: string; fieldName: string; fieldValue: any } }
-  | { type: 'SET_FIELD_ERROR'; payload: {nodeId: string, fieldName: string, errorMessage: string}};
+  | { type: 'SET_FIELD_ERROR'; payload: { nodeId: string, fieldName: string, errorMessage: string } }
+  | { type: 'RESET_FIELD_ERROR'; payload: { nodeId: string, fieldName: string } }
 
 const workflowReducer = (state: WorkflowState, action: Action): WorkflowState => {
   switch (action.type) {
@@ -121,6 +122,28 @@ const workflowReducer = (state: WorkflowState, action: Action): WorkflowState =>
           return node;
         }),
       }
+    }
+
+    case 'RESET_FIELD_ERROR': {
+      const { nodeId, fieldName } = action.payload;
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                errors: {
+                  ...node.data.errors,
+                  [fieldName]: ''
+                },
+              },
+            };
+          }
+          return node;
+        }),
+      };
     }
 
     default:

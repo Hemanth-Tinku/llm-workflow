@@ -187,19 +187,39 @@ const WorkflowCanvas: React.FC = () => {
                     dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'inputValue', errorMessage: 'Input is required.' } });
                     throw new Error(`Empty Input node with ID: ${node.id}`);
                 }
+                else if (node.type === 'inputNode' && Object.keys(node.data?.errors)?.length) {
+                    dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'inputNode' } });
+                }
                 if (node.type === 'llmNode') {
+                    let hasError = false;
                     if (!node.data.modelName) {
                         dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'modelName', errorMessage: 'Model name is required.' } })
+                        hasError = true;
+                    }
+                    else {
+                        dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'modelName' } });
                     }
                     if (!node.data.apiKey) {
                         dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'apiKey', errorMessage: 'API key is required.' } })
+                        hasError = true;
+                    }
+                    else {
+                        dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'apiKey' } });
                     }
                     if (!node.data.base) {
                         dispatch({ type: 'SET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'base', errorMessage: 'Base URL is required.' } })
+                        hasError = true;
                     }
-                    throw new Error(`Configuration missing in LLM node with ID: ${node.id}`);
+                    else {
+                        dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'base' } });
+                    }
+                    if (hasError) {
+                        throw new Error(`Configuration missing in LLM node with ID: ${node.id}`);
+                    }
+
                 }
             }
+
 
             for (const node of state.nodes) {
 

@@ -1,4 +1,7 @@
+import React from 'react';
 import { Handle, Position } from 'reactflow';
+import { styles } from '../../styles/inputNode';
+
 
 interface InputNodeProps {
     id: string;
@@ -25,22 +28,27 @@ const InputNode: React.FC<InputNodeProps> = ({ id, data }) => {
     };
 
     return (
-        <div style={{ width: 220, padding: '10px', border: '1px solid #ddd', borderRadius: '5px', background: '#f5f5f5' }}>
-            <div>
-                <strong>Input</strong>
+        <div style={styles.nodeContainer}>
+            <div style={styles.titleContainer}>
+                <strong style={styles.nodeTitle}>Input</strong>
             </div>
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>Input:</label>
+            <div style={styles.inputContainer}>
+                <label style={styles.inputLabel}>Input:</label>
                 <input
                     type="text"
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder="Enter your query"
-                    style={{ width: '100%', marginBottom: '5px' }}
+                    style={styles.inputField}
                 />
-                {errors?.inputValue && <span style={{ color: 'red', fontSize: 12 }}>{errors.inputValue}</span>}
+                {errors?.inputValue && <span style={styles.errorText}>{errors.inputValue}</span>}
             </div>
-            <Handle type="source" position={Position.Right} id={`${id}-llm`} />
+            <Handle
+                type="source"
+                position={Position.Right}
+                id={`${id}-llm`}
+                style={styles.handle}
+            />
         </div>
     );
 };

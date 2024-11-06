@@ -1,3 +1,5 @@
+import { styles } from "../../styles/navbar";
+
 interface NavbarProps {
     title: string;
     onRunWorkflow: () => void;
@@ -6,9 +8,18 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ title, onRunWorkflow, isRunning }) => {
     return (
-        <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', backgroundColor: '#282c34', color: 'white' }}>
-            <h1>{title}</h1>
-            <button onClick={onRunWorkflow} disabled={isRunning} style={{ padding: '10px 20px', fontSize: '16px' }}>
+        <nav style={styles.navbarContainer}>
+            <h1 style={styles.title}>{title}</h1>
+            <button
+                onClick={onRunWorkflow}
+                disabled={isRunning}
+                style={{
+                    ...styles.button,
+                    ...(isRunning ? styles.buttonDisabled : {}),
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = (isRunning ? styles.buttonDisabled.backgroundColor : styles.button.backgroundColor)}
+            >
                 {isRunning ? 'Running...' : 'Run Workflow'}
             </button>
         </nav>

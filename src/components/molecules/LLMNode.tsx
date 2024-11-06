@@ -1,4 +1,5 @@
 import { Handle, Position } from 'reactflow';
+import { styles } from '../../styles/llmNode';
 
 interface LLMNodeProps {
     id: string;
@@ -19,9 +20,7 @@ interface LLMNodeProps {
 }
 
 const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
-    const { id: nodeID, modelName, base, apiKey,
-        maxTokens,
-        temperature, errors, dispatch } = data;
+    const { id: nodeID, modelName, base, apiKey, maxTokens, temperature, errors, dispatch } = data;
 
     const onChangeField = (key: string, value: string | number) => {
         dispatch({
@@ -32,47 +31,47 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
     }
 
     return (
-        <div style={{ width: 260, padding: 10, border: '1px solid #ddd', borderRadius: 5, background: '#f9f9f9' }}>
-            <strong style={{ display: 'block', marginBottom: 8 }}>LLM Node</strong>
+        <div style={styles.nodeContainer}>
+            <strong style={styles.nodeTitle}>LLM Node</strong>
 
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>Model Name:</label>
+            <div style={styles.inputContainer}>
+                <label style={styles.label}>Model Name:</label>
                 <input
                     type="text"
                     value={modelName}
                     onChange={(e) => onChangeField('modelName', e.target.value)}
                     placeholder="e.g., gpt-3.5"
-                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                    style={styles.input}
                 />
-                {errors.modelName && <span style={{ color: 'red', fontSize: 12 }}>{errors.modelName}</span>}
+                {errors.modelName && <span style={styles.errorText}>{errors.modelName}</span>}
             </div>
 
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>OpenAI Base:</label>
+            <div style={styles.inputContainer}>
+                <label style={styles.label}>OpenAI Base:</label>
                 <input
                     type="text"
                     value={base}
                     onChange={(e) => onChangeField('base', e.target.value)}
                     placeholder="e.g., https://api.openai.com"
-                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                    style={styles.input}
                 />
-                {errors.base && <span style={{ color: 'red', fontSize: 12 }}>{errors.base}</span>}
+                {errors.base && <span style={styles.errorText}>{errors.base}</span>}
             </div>
 
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>OpenAI API Key:</label>
+            <div style={styles.inputContainer}>
+                <label style={styles.label}>OpenAI API Key:</label>
                 <input
                     type="password"
                     value={apiKey}
                     onChange={(e) => onChangeField('apiKey', e.target.value)}
                     placeholder="Enter API Key"
-                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                    style={styles.input}
                 />
-                {errors.apiKey && <span style={{ color: 'red', fontSize: 12 }}>{errors.apiKey}</span>}
+                {errors.apiKey && <span style={styles.errorText}>{errors.apiKey}</span>}
             </div>
 
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>Max Tokens:</label>
+            <div style={styles.inputContainer}>
+                <label style={styles.label}>Max Tokens:</label>
                 <input
                     type="number"
                     value={maxTokens}
@@ -80,12 +79,12 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
                     min={1}
                     max={4096}
                     placeholder="e.g., 100"
-                    style={{ width: '100%', marginBottom: 4, padding: 4 }}
+                    style={styles.input}
                 />
             </div>
 
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 13 }}>
+            <div style={styles.inputContainer}>
+                <label style={styles.label}>
                     Temperature: <strong>{temperature}</strong>
                 </label>
                 <input
@@ -95,14 +94,16 @@ const LLMNode: React.FC<LLMNodeProps> = ({ id, data }) => {
                     min={0}
                     max={1}
                     step={0.1}
-                    style={{ width: '100%' }}
+                    style={styles.rangeInput}
                 />
             </div>
 
-            <Handle type="target" position={Position.Left} id={`${id}-input`} />
-            <Handle type="source" position={Position.Right} id={`${id}-output`} />
+            <Handle type="target" position={Position.Left} id={`${id}-input`} style={styles.handle} />
+            <Handle type="source" position={Position.Right} id={`${id}-output`} style={styles.handle} />
         </div>
     );
 };
+
+
 
 export default LLMNode;

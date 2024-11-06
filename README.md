@@ -19,6 +19,16 @@ The application is designed as a single-page app (SPA) in React, leveraging the 
 3. **Event Flow**: Each workflow execution is handled sequentially, validating nodes and dispatching outputs where required.
 4. **UI Styling**: Styles are modularized in a dedicated `styles` folder, providing consistent and reusable design elements across components.
 
+## Source Code Documentation
+
+This repository includes a well-structured codebase with clear separation between components, styles, and state management. The following are key areas to explore in the source code:
+
+- **Reducers**: `workflowReducer.ts` manages state updates, helping to keep the workflow synchronized as users interact with the canvas.
+- **Components**: Components are organized to be modular, reusable, and focused on a specific functionality, making it easy to maintain and extend.
+- **Styles**: All styles are centralized in the `styles` folder for easy maintenance and consistency across the application.
+
+This organization ensures that the codebase is scalable, easy to navigate, and promotes reuse of common patterns and components.
+
 ## Folder Structure
 
 The project’s structure follows a component-driven approach, grouping components based on their functionality as "molecules" and "organisms." Here is a breakdown of the main folders:

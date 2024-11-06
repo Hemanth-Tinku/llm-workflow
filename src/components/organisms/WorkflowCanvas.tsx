@@ -188,7 +188,7 @@ const WorkflowCanvas: React.FC = () => {
                     throw new Error(`Empty Input node with ID: ${node.id}`);
                 }
                 else if (node.type === 'inputNode' && Object.keys(node.data?.errors)?.length) {
-                    dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'inputNode' } });
+                    dispatch({ type: 'RESET_FIELD_ERROR', payload: { nodeId: node.id, fieldName: 'inputValue' } });
                 }
                 if (node.type === 'llmNode') {
                     let hasError = false;

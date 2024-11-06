@@ -6,7 +6,7 @@ This project is a **workflow builder for LLM (Large Language Model) nodes**, pro
 
 ## Overview
 
-The LLM Workflow Builder enables users to create and connect different nodes to simulate workflows involving input data, LLM configuration, and output results. This project showcases the capability to integrate and validate various parameters essential for interacting with LLM APIs, allowing seamless setup and execution of workflows.
+The LLM Workflow Builder enables users to create and connect different nodes to simulate workflows involving input data, LLM configuration, and output results.
 
 ### Key Features
 

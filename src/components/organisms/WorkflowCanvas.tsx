@@ -38,7 +38,15 @@ const WorkflowCanvas: React.FC = () => {
     }
 
     const onConnect = (connection: Connection) => {
-        dispatch({ type: 'CONNECT', payload: connection });
+        const { source, target } = connection;
+        const sourceNode = state.nodes.find(node => node.id === source);
+        const targetNode = state.nodes.find(node => node.id === target);
+        if (sourceNode && targetNode) {
+            if ((sourceNode.type === 'inputNode' && targetNode.type === 'llmNode') ||
+                (sourceNode.type === 'llmNode' && targetNode.type === 'outputNode')) {
+                dispatch({ type: 'CONNECT', payload: connection });
+            }
+        }
     }
 
     const onAddNode = (node: Node) => {

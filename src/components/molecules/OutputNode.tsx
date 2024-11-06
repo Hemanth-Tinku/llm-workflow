@@ -13,7 +13,7 @@ const OutputNode: React.FC<OutputNodeProps> = ({ id, data }) => {
             <Handle
                 type="target"
                 position={Position.Left}
-                id={`${id}-value`}
+                id={`${id}-llm`}
             />
             <div>
                 <strong>Output</strong>
@@ -24,11 +24,6 @@ const OutputNode: React.FC<OutputNodeProps> = ({ id, data }) => {
                     <p>{data.outputValue}</p>
                 </div>
             )}
-            <Handle
-                type="source"
-                position={Position.Right}
-                id={`${id}-output`}
-            />
         </div>
     );
 };

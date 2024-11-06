@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 
 interface InputNodeProps {
-    id: string; 
+    id: string;
     data: any;
 }
 
@@ -12,13 +12,6 @@ const InputNode: React.FC<InputNodeProps> = ({ id, data }) => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setInputValue(value);
-    };
-
-    const handleSubmit = () => {
-        if (inputValue.trim()) {
-            data.onInputSubmit(inputValue);
-            setInputValue("");
-        }
     };
 
     return (
@@ -38,10 +31,7 @@ const InputNode: React.FC<InputNodeProps> = ({ id, data }) => {
                     />
                 </label>
             </div>
-            <button onClick={handleSubmit} style={{ marginTop: '5px', width: '100%' }}>
-                Submit Input
-            </button>
-            <Handle type="source" position={Position.Right} id={`${id}-output`} />
+            <Handle type="source" position={Position.Right} id={`${id}-llm`} />
         </div>
     );
 };
